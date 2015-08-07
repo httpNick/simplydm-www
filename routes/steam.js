@@ -29,7 +29,8 @@ passport.use(new SteamStrategy({
               steamid: profile.id,
               avatar: profile._json.avatarfull,
               subscriber: false,
-              clientToken: ''
+              clientToken: '',
+              isAdmin: false
             })
 
             newUser.save(function(err) {

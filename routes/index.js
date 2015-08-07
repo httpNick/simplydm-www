@@ -41,15 +41,6 @@ router.get('/logout', ensureAuthenticated, function(req, res) {
   res.redirect('/')
 })
 
-router.get('/servers', function (req, res) {
-
-  /*Logic to ping the servers and check:
-  * Online/offline
-  * Current map
-  * Player count
-  */
-  res.render('servers')
-})
 // router.get('/login', function(req, res) {
 //   res.render('login')
 // })

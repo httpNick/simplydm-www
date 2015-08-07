@@ -1,17 +1,17 @@
-var mongoose = require('mongoose');
-var config = require('../config.js')
+var mongoose = require('mongoose'),
+    Schema = mongoose.Schema,
+    ObjectID = Schema.ObjectID
 
-mongoose.connect('mongodb://'+config.db.domain+':27017/SimplyDM')
-
-var userSchema = new mongoose.Schema({
+var UserSchema = new Schema({
   displayName: String,
   identifier: String,
   steamid: String,
   avatar: String,
   clientToken: String,
-  subscriber: Boolean
+  subscriber: Boolean,
+  isAdmin: Boolean
 })
 
-var User = mongoose.model('User', userSchema)
+mongoose.model('User', UserSchema)
 
-module.exports = User
+module.exports = mongoose.model('User')

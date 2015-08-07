@@ -6,10 +6,15 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var passport = require('passport');
 var session = require('express-session')
+var mongoose = require('mongoose');
+var MongoStore = require('connect-mongo')(session);
+
 var config = require('./config');
 
 var routes = require('./routes/index');
 var steam = require('./routes/steam');
+var faq = require('./routes/faq');
+var servers = require('./routes/servers');
 
 var app = express();
 
@@ -37,11 +42,22 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(session({ secret: 'keyboard cat' }));
+app.use(session({
+  secret: 'keyboard cat',
+  store: new MongoStore({
+    saveUninitialized: false, // don't create session until something stored
+    resave: false, //don't save session if unmodified
+    url: 'mongodb://' + config.db.domain + ':27017/SimplyDM',
+    touchAfter: 24 * 3600, // time period in seconds
+    ttl: 14 * 24 * 60 * 60 // = 14 days. Default
+  })
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(function (req, res, next) {
+mongoose.connect('mongodb://'+config.db.domain+':'+ config.db.port || '27017' +'/SimplyDM')
+
+app.use(function(req, res, next) {
   if (req.isAuthenticated()) {
     res.locals.signedIn = true
     return next()
@@ -53,6 +69,8 @@ app.use(function (req, res, next) {
 
 app.use('/', routes);
 app.use('/', steam)
+app.use('/faq', faq)
+app.use('/servers', servers)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
