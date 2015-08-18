@@ -3,11 +3,12 @@ var mongoose = require('mongoose'),
     ObjectID = Schema.ObjectID
 
 var ServerSchema = new Schema({
+  hostname: String,
+  location: String,
   ip: String,
   port: Number,
-  hostname: String,
   map: String,
-  online: Boolean
+  players: Number
 })
 
 mongoose.model('Server', ServerSchema)

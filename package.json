@@ -20,9 +20,11 @@
     "node-ping": "^0.1.0",
     "passport": "^0.2.2",
     "passport-steam": "^0.1.5",
-    "ping": "^0.1.10",
     "rcon": "^1.0.1",
     "serve-favicon": "~2.2.0",
     "srcds-rcon": "^1.1.7"
+  },
+  "jshintConfig": {
+    "asi": true
   }
 }

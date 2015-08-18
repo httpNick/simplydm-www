@@ -3,6 +3,7 @@ var router = express.Router()
 var config = require('../config.js')
 var User = require('../models/User.js')
 var braintree = require('braintree')
+var utils = require('../utils/utils');
 var gateway = braintree.connect({
     environment: braintree.Environment.Sandbox,
     merchantId: 'qg8kkp87dm253bf5',
@@ -30,13 +31,7 @@ router.get('/', function(req, res, next) {
   }
 })
 
-function ensureAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) {
-    return next()
-  }
-  res.redirect('/')
-}
-router.get('/logout', ensureAuthenticated, function(req, res) {
+router.get('/logout', utils.ensureAuthenticated, function(req, res) {
   req.logout()
   res.redirect('/')
 })
@@ -44,7 +39,7 @@ router.get('/logout', ensureAuthenticated, function(req, res) {
 // router.get('/login', function(req, res) {
 //   res.render('login')
 // })
-router.get('/account', ensureAuthenticated, function (req, res) {
+router.get('/account', utils.ensureAuthenticated, function (req, res) {
   var account = {}
   User.findOne({'identifier' : req.session.passport.user.identifier},
   'subscriber displayname steamid avatar', function (err, doc) {
@@ -56,7 +51,7 @@ router.get('/account', ensureAuthenticated, function (req, res) {
 })
 
 // TODO: rewrite subscription page
-// router.post('/checkout', ensureAuthenticated, function(req, res) {
+// router.post('/checkout', utils.ensureAuthenticated, function(req, res) {
 //   var nonce = req.body.payment_method_nonce
 //   User.findOne({
 //     'identifier': req.session.passport.user.identifier
@@ -76,7 +71,7 @@ router.get('/account', ensureAuthenticated, function (req, res) {
 //   })
 // })
 
-// router.get('/subscribe', ensureAuthenticated, function(req, res) {
+// router.get('/subscribe', utils.ensureAuthenticated, function(req, res) {
 //   // res.render('subscribe')
 //   User.findOne({
 //       'identifier': req.session.passport.user.identifier

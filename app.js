@@ -47,7 +47,7 @@ app.use(session({
   store: new MongoStore({
     saveUninitialized: false, // don't create session until something stored
     resave: false, //don't save session if unmodified
-    url: 'mongodb://' + config.db.domain + ':' + config.db.port + '/SimplyDM',
+    url: 'mongodb://' + config.db.domain + ':' + config.db.port || '27017' + '/SimplyDM',
     touchAfter: 24 * 3600, // time period in seconds
     ttl: 14 * 24 * 60 * 60 // = 14 days. Default
   })
@@ -55,7 +55,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-mongoose.connect('mongodb://'+config.db.domain+':'+config.db.port || '27017' +'/SimplyDM')
+mongoose.connect('mongodb://' + config.db.domain + ':' + config.db.port || '27017' + '/SimplyDM')
 
 app.use(function(req, res, next) {
   if (req.isAuthenticated()) {
