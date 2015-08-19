@@ -18,7 +18,6 @@ conn.on('auth', function() {
 
 conn.on('response', function(str) {
   if (auth) {
-    console.log(str);
     update(str.replace(/(?:\r\n|\r|\n)/g, ',').split(','))
   } else {
     console.log('Not authed');
@@ -27,25 +26,16 @@ conn.on('response', function(str) {
 
 conn.connect();
 
-var data = {
-  '0': {
-    'hostname' : '',
-    'map' : '',
-    'players' : 0
-  },
-}
+var data = []
 
 function update(str) {
-  data[0].hostname = str[0].slice(11, -1)
-  data[0].map = str[5].slice(11, -1)
-  data[0].players = str[6].slice(11, -8)
+  newData = {hostname : '', map : '', players : 0};
+  newData.hostname = str[0].slice(10);
+  newData.map = str[5].slice(10);
+  newData.players = parseInt(str[6]
+    .match(/(\b\d+(?:[\.,]\d+)?\b(?!(?:[\.,]\d+)|(?:\s*(?:%|percent))))/));
+  data.push(newData);
   console.log(data);
-  // var hostname  = data[0].toString().slice(11, -1)
-  // var map       = JSON.stringify(data[5]).slice(11, -1)
-  // var players   = JSON.stringify(data[6]).slice(11, -8)
-  // console.log(hostname);
-  // console.log(map);
-  // console.log(players);
 }
 //update server stats
 Server.findOne({
