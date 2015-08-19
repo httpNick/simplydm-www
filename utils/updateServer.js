@@ -1,8 +1,11 @@
 var Rcon = require('rcon');
 var mongoose = require('mongoose');
+var Q = require('q');
 var Server = require('../models/Server');
 
-var conn = new Rcon('46.101.5.97', 27015, 'REDACTED');
+var conn = new Rcon('178.62.87.33', 27015, '123');
+
+var auth = false;
 
 setInterval(function (argument) {
   conn.send('status')
@@ -10,31 +13,29 @@ setInterval(function (argument) {
 
 conn.on('auth', function() {
   console.log("Authed!");
-}).on('response', function(str) {
-  update(str.replace(/(?:\r\n|\r|\n)/g, ',').split(','))
-})
+  auth = true;
+});
+
+conn.on('response', function(str) {
+  if (auth) {
+    update(str.replace(/(?:\r\n|\r|\n)/g, ',').split(','))
+  } else {
+    console.log('Not authed');
+  }
+});
 
 conn.connect();
 
-var data = {
-  '0': {
-    'hostname' : '',
-    'map' : '',
-    'players' : 0
-  },
-}
+var data = []
 
 function update(str) {
-  data[0].hostname = str[0].slice(11, -1)
-  data[0].map = str[5].slice(11, -1)
-  data[1].players = str[6].slice(11, -8)
+  newData = {hostname : '', map : '', players : 0};
+  newData.hostname = str[0].slice(10);
+  newData.map = str[5].slice(10);
+  newData.players = parseInt(str[6]
+    .match(/(\b\d+(?:[\.,]\d+)?\b(?!(?:[\.,]\d+)|(?:\s*(?:%|percent))))/));
+  data.push(newData);
   console.log(data);
-  // var hostname  = data[0].toString().slice(11, -1)
-  // var map       = JSON.stringify(data[5]).slice(11, -1)
-  // var players   = JSON.stringify(data[6]).slice(11, -8)
-  // console.log(hostname);
-  // console.log(map);
-  // console.log(players);
 }
 //update server stats
 Server.findOne({
