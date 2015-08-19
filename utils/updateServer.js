@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 var Q = require('q');
 var Server = require('../models/Server');
 
-var conn = new Rcon('178.62.87.33', 27015, '123');
+var conn = new Rcon('178.62.87.33', 27015, 'TO BE SET UP WITH CONFIG');
 
 var auth = false;
 
