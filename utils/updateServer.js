@@ -1,6 +1,4 @@
 var Rcon = require('rcon');
-var mongoose = require('mongoose');
-var Server = require('../models/Server');
 var conn = new Rcon('178.62.84.123', 27015, "s3cur3");
 var data = [];
 
@@ -27,13 +25,3 @@ var update = function(str) {
   data.push(newData);
   console.log(data);
 }
-//update server stats
-Server.findOne({
-    'ip': 'test'
-  },
-  function(err, doc) {
-    var newServer = new Server({
-      map: '',
-      players: 6
-    }).save()
-})
