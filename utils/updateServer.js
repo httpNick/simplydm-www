@@ -1,34 +1,24 @@
 var Rcon = require('rcon');
 var mongoose = require('mongoose');
-var Q = require('q');
 var Server = require('../models/Server');
+var conn = new Rcon('178.62.84.123', 27015, "s3cur3");
+var data = [];
 
-var conn = new Rcon('178.62.87.33', 27015, 'TO BE SET UP WITH CONFIG');
-
-var auth = false;
-
-setInterval(function (argument) {
-  conn.send('status')
-}, 3000)
-
-conn.on('auth', function() {
+conn.on('connect', function() {
+  console.log("connected!");
+}).on('auth', function() {
   console.log("Authed!");
-  auth = true;
-});
-
-conn.on('response', function(str) {
-  if (auth) {
-    update(str.replace(/(?:\r\n|\r|\n)/g, ',').split(','))
-  } else {
-    console.log('Not authed');
+  conn.send('status');
+}).on('response', function(str) {
+  if (str != '') {
+    update(str.replace(/(?:\r\n|\r|\n)/g, ',').split(','));
   }
 });
 
 conn.connect();
 
-var data = []
-
-function update(str) {
+var update = function(str) {
+  console.log(str);
   newData = {hostname : '', map : '', players : 0};
   newData.hostname = str[0].slice(10);
   newData.map = str[5].slice(10);
